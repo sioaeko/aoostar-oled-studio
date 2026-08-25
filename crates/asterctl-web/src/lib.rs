@@ -668,8 +668,8 @@ fn boost_rgb565_le(frame: &[u8], brightness: u8) -> Vec<u8> {
         }
     });
     let mut boosted = Vec::with_capacity(frame.len());
-    for pixel in frame.chunks_exact(2) {
-        let packed = u16::from_le_bytes([pixel[0], pixel[1]]);
+    for pixel in frame.as_chunks::<2>().0 {
+        let packed = u16::from_le_bytes(*pixel);
         let red = ((packed >> 11) & 0x1f) as u32;
         let green = ((packed >> 5) & 0x3f) as u32;
         let blue = (packed & 0x1f) as u32;
