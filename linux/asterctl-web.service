@@ -1,0 +1,31 @@
+[Unit]
+Description=AOOSTAR OLED Studio web host
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=aoostar
+Group=aoostar
+SupplementaryGroups=dialout
+# Safe source-template default. The installer replaces loopback with one
+# verified RFC1918 address and appends the verified legacy serial path.
+ExecStart=/usr/local/bin/asterctl-web --bind 127.0.0.1:8787
+Restart=on-failure
+RestartSec=3
+RuntimeDirectory=asterctl-web
+RuntimeDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+LockPersonality=true
+MemoryDenyWriteExecute=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

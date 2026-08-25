@@ -1,0 +1,16 @@
+[workspace]
+members = ["crates/asterctl-lcd", "crates/asterctl-web"]
+resolver = "3"
+
+[workspace.package]
+rust-version = "1.88"
+edition = "2024"
+authors = ["sioaeko"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/sioaeko/aoostar-oled-studio"
+homepage = "https://github.com/sioaeko/aoostar-oled-studio"
+
+[workspace.dependencies]
+anyhow = "1.0.104"
+image = { version = "0.25.10", default-features = false, features = ["gif", "jpeg", "png"] }
+log = "0.4.34"

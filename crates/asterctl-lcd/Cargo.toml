@@ -1,0 +1,21 @@
+[package]
+name = "asterctl-lcd"
+version = "0.2.0"
+description = "AOOSTAR WTR MAX / GEM12+ PRO screen protocol"
+readme = "README.md"
+keywords = ["aoostar", "oled", "rgb565", "serial"]
+categories = ["hardware-support"]
+
+rust-version.workspace = true
+edition.workspace = true
+authors = ["Markus Zehnder", "sioaeko"]
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+bytes = "1.12.1"
+image.workspace = true
+log.workspace = true
+serialport = "4.7.3"

@@ -1,0 +1,342 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --c-bg: #f4f6f8;
+  --c-bg-from: #f8f9fb;
+  --c-bg-to: #edf0f3;
+  --c-surface: #ffffff;
+  --c-topbar: rgba(255, 255, 255, 0.7);
+  --c-soft: #f3f4f6;
+  --c-soft-60: rgba(243, 244, 246, 0.6);
+  --c-border: #eef1f4;
+  --c-border-strong: #e5e7eb;
+  --c-text: #111827;
+  --c-text-2: #6b7280;
+  --c-text-3: #9ca3af;
+  --c-track: rgba(15, 23, 42, 0.08);
+  --c-track-bar: #f3f4f6;
+  --c-track-2: rgba(229, 231, 235, 0.8);
+  --c-accent-bg: #ecfdf5;
+  --c-accent-text: #047857;
+  --c-live-text: #059669;
+  --c-cyan-text: #0891b2;
+  --c-ok-bg: #d1fae5;
+  --c-ok-text: #047857;
+  --c-ok-border: #a7f3d0;
+  --c-warn-bg: #fffbeb;
+  --c-warn-text: #b45309;
+  --c-warn-border: #fde68a;
+  --c-danger-bg: #fee2e2;
+  --c-danger-text: #dc2626;
+  /* Logo gradient stops — theme-aware so the `svg stop` transition rule
+     (fill/stroke/stop-color) can blend them on theme change. Keep both
+     themes two stops; only the colors may differ. */
+  --c-logo-grad-a: #34d399;
+  --c-logo-grad-b: #06b6d4;
+  /*
+   * Theme shadows. Each light/dark pair must keep the SAME number of shadow
+   * layers with IDENTICAL offsets/blur so box-shadow interpolates smoothly
+   * during theme transitions — only the rgba() colors may differ (they
+   * interpolate fine). The global `*` transition rule below includes
+   * box-shadow, so cards animate their shadow when the theme flips.
+   */
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.05), 0 6px 20px -8px rgba(15, 23, 42, 0.1);
+  --shadow-card-hover: 0 2px 4px rgba(15, 23, 42, 0.06), 0 14px 36px -12px rgba(15, 23, 42, 0.18);
+  --shadow-page: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 40px -16px rgba(15, 23, 42, 0.12);
+  /*
+   * Motion intensity — transition/entrance distances used by the keyframes
+   * below. `data-motion='subtle'` on <html> shrinks every distance; the
+   * 'reduced' mode additionally zeroes durations via the rule below.
+   */
+  --motion-rise: 6px; /* fade-in / fade-out vertical drift */
+  --motion-rise-lg: 8px; /* stagger-fade-in */
+  --motion-slide: 24px; /* card-slide, slide-out-left */
+  --motion-logo: 10px; /* logo-rise */
+  --motion-sidebar: 6px; /* sidebar-label-in */
+  --motion-scale: 0.96; /* scale-out */
+  --motion-shake: 10px; /* login-shake */
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --c-bg: #0b0f0d;
+  --c-bg-from: #0f1411;
+  --c-bg-to: #070a08;
+  --c-surface: #131916;
+  --c-topbar: rgba(19, 25, 22, 0.72);
+  --c-soft: #1c231f;
+  --c-soft-60: rgba(28, 35, 31, 0.7);
+  --c-border: #202823;
+  --c-border-strong: #2b342e;
+  --c-text: #f3f4f6;
+  --c-text-2: #9ca3af;
+  --c-text-3: #6b7280;
+  --c-track: rgba(255, 255, 255, 0.1);
+  --c-track-bar: #232b26;
+  --c-track-2: rgba(255, 255, 255, 0.14);
+  --c-accent-bg: rgba(16, 185, 129, 0.16);
+  --c-accent-text: #6ee7b7;
+  --c-live-text: #34d399;
+  --c-cyan-text: #22d3ee;
+  --c-ok-bg: rgba(16, 185, 129, 0.16);
+  --c-ok-text: #6ee7b7;
+  --c-ok-border: rgba(16, 185, 129, 0.4);
+  --c-warn-bg: rgba(245, 158, 11, 0.15);
+  --c-warn-text: #fcd34d;
+  --c-warn-border: rgba(245, 158, 11, 0.4);
+  --c-danger-bg: rgba(239, 68, 68, 0.16);
+  --c-danger-text: #fca5a5;
+  /* Logo gradient stops — slightly brighter in dark mode to stay vivid on
+     the dark tile; the svg stop rule interpolates stop-color on toggle. */
+  --c-logo-grad-a: #4ade80;
+  --c-logo-grad-b: #22d3ee;
+  /* Keep the same layer count/offsets as :root — only the colors may differ
+     so box-shadow can interpolate during theme transitions. */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 20px -8px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 2px 4px rgba(0, 0, 0, 0.4), 0 14px 36px -12px rgba(0, 0, 0, 0.6);
+  --shadow-page: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 40px -16px rgba(0, 0, 0, 0.5);
+}
+
+/* Subtle mode — shorter distances, still animated. ~⅓ of standard. */
+html[data-motion='subtle'] {
+  --motion-rise: 2px;
+  --motion-rise-lg: 3px;
+  --motion-slide: 8px;
+  --motion-logo: 4px;
+  --motion-sidebar: 2px;
+  --motion-scale: 0.985;
+  --motion-shake: 4px;
+}
+
+/* System reduced-motion — applies until the app sets an explicit data-motion
+   mode on <html> (the useMotion hook always sets one before paint). */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion]) *,
+  html:not([data-motion]) *::before,
+  html:not([data-motion]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* User picked "Reduced" — same instant behavior, explicit and sticky. */
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+body {
+  font-family: 'Figtree', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+}
+
+/*
+ * Smooth theme transitions — applied to every element that consumes CSS
+ * variable tokens. Only the most common theme-sensitive properties are
+ * listed; animations and discrete properties (color-scheme, gradient stops)
+ * are excluded.
+ */
+*,
+*::before,
+*::after {
+  transition-property: background-color, color, border-color, outline-color, box-shadow, text-decoration-color, fill, stroke;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/*
+ * SVG charts/gauges — transition stroke/fill (and gradient stop-color) so
+ * gauge arcs, sparklines and gradient area fills blend smoothly on theme
+ * change. Presentation attributes participate in the cascade, so target
+ * the elements explicitly rather than relying only on the global `*` rule.
+ */
+svg path,
+svg circle,
+svg rect,
+svg line,
+svg stop {
+  transition-property: fill, stroke, stop-color;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/*
+ * Disable the theme transition on the initial page load so there is no
+ * flash from the un-themed state. The theme is set synchronously via
+ * useLayoutEffect before the first paint.
+ */
+html.theme-ready *,
+html.theme-ready *::before,
+html.theme-ready *::after {
+  transition-duration: 0.25s;
+}
+
+html:not(.theme-ready) *,
+html:not(.theme-ready) *::before,
+html:not(.theme-ready) *::after {
+  transition-duration: 0s !important;
+}
+
+::selection {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise, 6px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--motion-rise, 6px) * -1));
+  }
+}
+
+/* Pure opacity fades — no translate, no scale. Used to replace every
+   slide/scale transition when the OS prefers reduced motion, so movement
+   is completely eliminated (only the opacity changes). */
+@keyframes fade-in-soft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-soft {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Staggered login intro */
+@keyframes logo-rise {
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(var(--motion-logo, 10px));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes card-slide {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-slide, 24px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stagger-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise-lg, 8px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sidebar collapse/expand — labels fade + slide in as the rail widens */
+@keyframes sidebar-label-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--motion-sidebar, 6px) * -1));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Active node indicator — the selected-node bar enters from the left edge
+   whenever the user switches nodes. Distance scales with the motion-intensity
+   variables (subtle ≈ ⅓ of standard); reduced motion swaps to fade-in-soft.
+   Both stops carry translateY(-50%): the bar sits at top-1/2 and its Tailwind
+   -translate-y-1/2 class is overridden while the animation runs (animations
+   win for animated properties), so without the offset the 24px bar would sit
+   12px low — and fill-mode both would keep it there permanently. */
+@keyframes node-indicator-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--motion-slide, 24px) * -1)) translateY(-50%) scaleY(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(-50%) scaleY(1);
+  }
+}
+
+/* Page transition keyframes — exits are directional, entries always fade in
+ * so every forward transition (login → otp → dashboard) feels consistent. */
+@keyframes slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--motion-slide, 24px) * -1));
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(var(--motion-scale, 0.96));
+  }
+}
+
+@keyframes login-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(calc(var(--motion-shake, 10px) * -1));
+  }
+  40% {
+    transform: translateX(var(--motion-shake, 10px));
+  }
+  60% {
+    transform: translateX(calc(var(--motion-shake, 10px) * -0.6));
+  }
+  80% {
+    transform: translateX(calc(var(--motion-shake, 10px) * 0.6));
+  }
+}

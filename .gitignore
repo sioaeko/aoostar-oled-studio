@@ -1,0 +1,13 @@
+/target/
+/_work/
+/artifacts/
+/output/
+/.playwright-cli/
+node_modules/
+__pycache__/
+*.pyc
+oled-studio/source/*.tsbuildinfo
+third_party/yt-dlp/yt-dlp
+.DS_Store
+*.bak
+Cargo.lock.tmp
