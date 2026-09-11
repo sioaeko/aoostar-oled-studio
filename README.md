@@ -5,7 +5,7 @@ WTR MAX and compatible systems. One Rust service hosts the OLED Studio UI,
 collects Linux telemetry, and serializes every display command through a single
 device worker.
 
-![AOOSTAR OLED Studio web control case-study frame](docs/portfolio/kmong-web-control-1600x1000.png)
+![AOOSTAR OLED Studio web UI](docs/img/oled-studio-web-ui.png)
 
 ## Features
 
@@ -20,10 +20,7 @@ device worker.
 
 ### Native 960×376 panel render
 
-![OLED Studio Stats panel rendered at the device's native resolution](docs/portfolio/kmong-panel-output-1600x1000.png)
-
-The unframed source captures and ready-to-upload 4:3 and square portfolio covers
-are available in [`docs/portfolio`](docs/portfolio/README.md).
+![OLED Studio Stats panel rendered at the device's native resolution](docs/img/oled-studio-panel-render.png)
 
 ## Proxmox installation
 
