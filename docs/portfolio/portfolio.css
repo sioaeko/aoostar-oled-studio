@@ -366,13 +366,13 @@ figcaption {
 }
 
 .web-frame {
-  height: 680px;
+  height: 535px;
   margin-top: 34px;
   overflow: hidden;
   border: 1px solid #c2c6c2;
   background: #e9ebe9;
   display: grid;
-  place-items: center;
+  place-items: start center;
 }
 
 .web-frame img {
@@ -383,11 +383,45 @@ figcaption {
   border-right: 1px solid #d5d8d5;
 }
 
+.web-notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 38px;
+  margin-top: 24px;
+  padding: 19px 0 20px;
+  border-top: 1px solid #cdd0cd;
+  border-bottom: 1px solid #cdd0cd;
+}
+
+.web-notes div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 15px;
+  align-items: baseline;
+}
+
+.web-notes b {
+  font-family: 'JetBrains Mono', Consolas, monospace;
+  color: #51595e;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.web-notes span {
+  color: #697176;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+
 .detail-foot {
   display: flex;
   gap: 34px;
   align-items: center;
-  margin-top: 19px;
+  margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid #cdd0cd;
   font-size: 11px;
