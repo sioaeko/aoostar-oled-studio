@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AOOSTAR OLED Studio — Portfolio Frames</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>" />
+    <link rel="stylesheet" href="./portfolio.css" />
+  </head>
+  <body>
+    <main class="shot-list">
+      <section class="shot cover" role="img" aria-label="크몽 서비스 대표 이미지 1200 곱하기 900">
+        <header class="cover-copy">
+          <p class="kicker">AOOSTAR / SELF-HOSTED DISPLAY CONTROL</p>
+          <h1>웹에서 다루는<br /><span>960×376</span><br />프론트 패널.</h1>
+          <p class="lead">Proxmox에서 구동되는<br />WTR MAX 웹 컨트롤러</p>
+          <dl class="cover-specs">
+            <div><dt>HOST</dt><dd>LINUX · PROXMOX</dd></div>
+            <div><dt>LINK</dt><dd>LAN · USB UART</dd></div>
+            <div><dt>OUTPUT</dt><dd>RGB565</dd></div>
+          </dl>
+        </header>
+
+        <div class="cover-proof" aria-label="실제 웹 UI와 패널 출력">
+          <div class="proof-label"><span>CONTROL</span><span>01</span></div>
+          <div class="control-crop">
+            <img src="../img/oled-studio-web-ui.png" alt="AOOSTAR OLED Studio 실제 웹 UI" />
+          </div>
+          <div class="proof-link"><span></span><b>CONTROL → OUTPUT</b><span></span></div>
+          <div class="output-crop">
+            <img src="../img/oled-studio-panel-render.png" alt="960 곱하기 376 패널 렌더" />
+          </div>
+          <div class="proof-label proof-label-bottom"><span>NATIVE FRAME</span><span>960 : 376</span></div>
+        </div>
+      </section>
+
+      <section class="shot portfolio-cover" role="img" aria-label="크몽 포트폴리오 표지 1200 곱하기 1200">
+        <div class="square-head">
+          <div>
+            <p class="kicker dark-kicker">CASE 01 / DISPLAY CONTROL</p>
+            <h2>AOOSTAR<br />OLED STUDIO</h2>
+          </div>
+          <p>웹 컨트롤과 실제 패널 출력 사이의<br />전체 흐름을 하나의 서비스로 구성했습니다.</p>
+        </div>
+
+        <figure class="square-web">
+          <img src="../img/oled-studio-web-ui.png" alt="AOOSTAR OLED Studio 웹 제어 화면" />
+          <figcaption><span>WEB CONTROL</span><span>SIMULATOR VIEW</span></figcaption>
+        </figure>
+
+        <div class="square-divider"><span>01</span><i></i><b>RENDER PATH</b><i></i><span>02</span></div>
+
+        <figure class="square-panel">
+          <img src="../img/oled-studio-panel-render.png" alt="AOOSTAR 패널 출력 렌더" />
+          <figcaption><span>PANEL OUTPUT</span><span>960×376 · RGB565</span></figcaption>
+        </figure>
+
+        <footer class="square-foot">
+          <span>PROXMOX HOST</span><span>LAN WEB UI</span><span>USB UART</span><span>DISPLAY OFF</span>
+        </footer>
+      </section>
+
+      <section class="shot web-detail" role="img" aria-label="웹 제어 화면 상세 이미지 1600 곱하기 1000">
+        <header class="detail-head light-head">
+          <div>
+            <p class="section-no">01 / WEB CONTROL</p>
+            <h2>웹에서 설정하고,<br />패널 출력을 바로 확인.</h2>
+          </div>
+          <p>Stats · GIF · Video · Image · Text · Off<br /><span>실제 웹 UI · 시뮬레이터 상태</span></p>
+        </header>
+
+        <figure class="web-frame">
+          <img src="../img/oled-studio-web-ui.png" alt="OLED Studio 전체 웹 인터페이스" />
+        </figure>
+
+        <footer class="detail-foot light-foot">
+          <span>01 — PANEL PREVIEW</span>
+          <span>02 — CONTENT MODES</span>
+          <span>03 — BRIDGE STATUS</span>
+          <b>AOOSTAR OLED STUDIO</b>
+        </footer>
+      </section>
+
+      <section class="shot panel-detail" role="img" aria-label="패널 출력 상세 이미지 1600 곱하기 1000">
+        <header class="detail-head dark-head">
+          <div>
+            <p class="section-no">02 / NATIVE OUTPUT</p>
+            <h2>작은 화면 안에서<br />필요한 정보만.</h2>
+          </div>
+          <p>CPU · RAM · 온도 · 네트워크 · 시계 · 업타임<br /><span>시뮬레이터 프레임 렌더</span></p>
+        </header>
+
+        <div class="ruler ruler-top"><span>0</span><i></i><b>960 PX</b><i></i><span>960</span></div>
+        <figure class="native-frame">
+          <img src="../img/oled-studio-panel-render.png" alt="960 곱하기 376 네이티브 패널 렌더" />
+        </figure>
+        <div class="ruler ruler-bottom"><span>RGB565</span><i></i><b>376 PX</b><i></i><span>2.55 : 1</span></div>
+
+        <footer class="panel-notes">
+          <div><b>LIVE TELEMETRY</b><span>호스트 상태를 정해진 주기로 갱신</span></div>
+          <div><b>ADAPTIVE SCALE</b><span>네트워크 단위를 트래픽에 맞춰 조정</span></div>
+          <div><b>DISPLAY MODES</b><span>대시보드부터 미디어·꺼짐까지</span></div>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>
