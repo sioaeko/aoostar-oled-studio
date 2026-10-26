@@ -10,6 +10,9 @@ device worker.
 ## Features
 
 - Live CPU, RAM, temperature, network, clock, hostname, and uptime dashboard
+- Read-only Spotify now-playing display laid out like Nocturne's player
+  (rounded artwork, title, artist, timeline, artwork-colored mesh gradient);
+  no panel playback controls
 - Source-timed, continuously looping GIF playback
 - Optional GIPHY search with a browser-local API key
 - Local video and YouTube playback with selectable duration and looping
@@ -21,6 +24,8 @@ device worker.
 ### Native 960×376 panel render
 
 ![OLED Studio Stats panel rendered at the device's native resolution](docs/img/oled-studio-panel-render.png)
+
+![Spotify now-playing panel with fictional sample artwork](docs/img/oled-studio-spotify-panel.png)
 
 ## Proxmox installation
 
@@ -39,10 +44,38 @@ sudo bash install-asterctl-web.sh --yes --purge-legacy \
   --device /dev/ttyACM0 --bind-address 192.168.1.10
 ```
 
+If the host has more than one private IPv4 address (for example a LAN address
+and an internal VM bridge such as `10.0.1.1`), the installer stops and requires
+`--bind-address`; pick the LAN address you browse from.
+
 Open `http://192.168.1.10:8787` from another computer on the same trusted LAN.
 The API has no login, so do not forward port 8787 to the internet. See
 [`linux/PROXMOX-INSTALL.md`](linux/PROXMOX-INSTALL.md) for migration, firewall,
 rollback, and brightness-probe details.
+
+### Spotify setup (v0.2.7)
+
+Connect your own Spotify app's Client ID using the loopback PKCE sign-in flow,
+then select **Show on panel** in the Spotify tab. The service updates the screen
+after the browser closes and saves the enabled mode for restart. Audio and
+playback controls stay on your existing Spotify device. The local sample is a
+web-only preview and is not sent to the panel.
+
+The panel follows the layout of Nocturne's now-playing screen without its
+controls, scaled to 960×376: 252 px artwork with rounded corners and a soft
+shadow, the title in Inter 580, the artist in 60% white, a pill timeline with
+elapsed and total time, and a four-point gradient sampled from the artwork.
+Hangul, kana and Hanja fall back to Noto Sans KR. Long titles are truncated with
+an ellipsis instead of scrolling. With nothing playing it shows "Not Playing"
+and the connection state. Nocturne is a visual reference only; no Nocturne code
+or assets are included.
+
+Spotify credentials are kept in `/var/lib/asterctl-web` through systemd
+`StateDirectory`, which the 0.2.7 installer validates as part of the unit policy.
+
+See [`docs/SPOTIFY.md`](docs/SPOTIFY.md) for account setup, persistent credentials,
+LAN security, and troubleshooting. Real-account authorization and physical-panel
+output remain unverified; a sample preview is not proof of either.
 
 ## Development
 

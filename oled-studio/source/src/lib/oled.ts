@@ -29,7 +29,7 @@ export interface BridgeStatus {
   connected: boolean;
   displayOn: boolean;
   brightness: number;
-  job: 'idle' | 'gif' | 'still' | 'unknown';
+  job: 'idle' | 'gif' | 'still' | 'spotify' | 'unknown';
   simulated: boolean;
   device?: string;
   uptimeSec?: number;

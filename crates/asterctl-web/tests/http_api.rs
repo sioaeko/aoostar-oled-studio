@@ -11,6 +11,99 @@ use image::{Delay, Frame, Rgba, RgbaImage};
 use serde::Deserialize;
 use tower::ServiceExt;
 
+#[tokio::test]
+async fn spotify_read_only_routes_validate_login_and_do_not_send_samples() {
+    let (runtime, device) = test_runtime();
+    let app = build_router(runtime.handle());
+    let status = app
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/api/spotify/status")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let body = status.into_body().collect().await.unwrap().to_bytes();
+    let value: serde_json::Value = serde_json::from_slice(&body).unwrap();
+    assert_eq!(value["connected"], false);
+    assert!(!String::from_utf8_lossy(&body).contains("refresh_token"));
+    for path in ["preview.png", "sample.png"] {
+        let response = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .uri(format!("/api/spotify/{path}"))
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        let image =
+            image::load_from_memory(&response.into_body().collect().await.unwrap().to_bytes())
+                .unwrap();
+        assert_eq!((image.width(), image.height()), (960, 376));
+    }
+    assert!(device.lock().unwrap().frame_lengths.is_empty());
+    let request = |path: &str, body: &str| {
+        Request::builder()
+            .method(Method::POST)
+            .uri(path)
+            .header(header::CONTENT_TYPE, "application/json")
+            .body(Body::from(body.to_owned()))
+            .unwrap()
+    };
+    let invalid = app
+        .clone()
+        .oneshot(request(
+            "/api/spotify/auth/start",
+            r#"{"client_id":"wrong"}"#,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(invalid.status(), StatusCode::BAD_REQUEST);
+    let response = app
+        .clone()
+        .oneshot(request(
+            "/api/spotify/auth/start",
+            r#"{"client_id":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}"#,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(response.status(), StatusCode::OK);
+    let value: serde_json::Value =
+        serde_json::from_slice(&response.into_body().collect().await.unwrap().to_bytes()).unwrap();
+    let url = url::Url::parse(value["authorization_url"].as_str().unwrap()).unwrap();
+    let pairs: std::collections::HashMap<_, _> = url.query_pairs().collect();
+    assert_eq!(pairs["scope"], "user-read-currently-playing");
+    assert_eq!(pairs["code_challenge_method"], "S256");
+    assert!(!pairs.contains_key("client_secret"));
+    let invalid = app
+        .clone()
+        .oneshot(request(
+            "/api/spotify/auth/complete",
+            r#"{"callback_url":"http://127.0.0.1:17879/callback?state=wrong&code=wrong"}"#,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(invalid.status(), StatusCode::BAD_REQUEST);
+    let unavailable = app
+        .clone()
+        .oneshot(request("/api/spotify/mode", r#"{"enabled":true}"#))
+        .await
+        .unwrap();
+    assert_eq!(unavailable.status(), StatusCode::BAD_REQUEST);
+    // There is deliberately no player-control endpoint.
+    let no_control = app
+        .oneshot(request("/api/spotify/play", "{}"))
+        .await
+        .unwrap();
+    assert_eq!(no_control.status(), StatusCode::NOT_FOUND);
+    runtime.shutdown(false).await.unwrap();
+}
+
 #[derive(Default)]
 struct DeviceState {
     display_on: bool,

@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
+mod spotify;
+mod spotify_render;
+
 use std::collections::HashMap;
 use std::fs;
 use std::io::Cursor;
@@ -325,6 +328,7 @@ pub enum Job {
     Idle,
     Gif,
     Still,
+    Spotify,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -916,6 +920,7 @@ struct AppState {
     decode_slots: Arc<Semaphore>,
     telemetry: Arc<Mutex<HostTelemetrySampler>>,
     youtube: YoutubeState,
+    spotify: spotify::Spotify,
 }
 
 #[derive(Clone, Debug)]
@@ -957,6 +962,16 @@ pub fn build_router(bridge: BridgeHandle) -> Router {
 }
 
 fn build_router_with_decode_slots(bridge: BridgeHandle, decode_slots: Arc<Semaphore>) -> Router {
+    let state_dir = std::env::var_os("ASTERCTL_STATE_DIR")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| {
+            if cfg!(target_os = "linux") {
+                PathBuf::from("/var/lib/asterctl-web")
+            } else {
+                PathBuf::from(".asterctl-state")
+            }
+        });
+    let spotify = spotify::Spotify::new(bridge.clone(), state_dir.join("spotify.json"));
     let development_origins = vec![
         HeaderValue::from_static("http://127.0.0.1:5173"),
         HeaderValue::from_static("http://localhost:5173"),
@@ -970,6 +985,13 @@ fn build_router_with_decode_slots(bridge: BridgeHandle, decode_slots: Arc<Semaph
         .route("/", get(index))
         .route("/api/status", get(api_status))
         .route("/api/telemetry", get(api_telemetry))
+        .route("/api/spotify/status", get(spotify::status))
+        .route("/api/spotify/auth/start", post(spotify::start))
+        .route("/api/spotify/auth/complete", post(spotify::complete))
+        .route("/api/spotify/mode", post(spotify::mode))
+        .route("/api/spotify/disconnect", post(spotify::disconnect))
+        .route("/api/spotify/preview.png", get(spotify::preview))
+        .route("/api/spotify/sample.png", get(spotify::sample))
         .route("/api/display/on", post(display_on))
         .route("/api/display/off", post(display_off))
         .route("/api/display/brightness", post(display_brightness))
@@ -988,6 +1010,7 @@ fn build_router_with_decode_slots(bridge: BridgeHandle, decode_slots: Arc<Semaph
             decode_slots,
             telemetry: Arc::new(Mutex::new(HostTelemetrySampler::default())),
             youtube: YoutubeState::default(),
+            spotify,
         })
 }
 
@@ -1077,7 +1100,11 @@ fn embedded_asset(path: &str) -> Response {
 }
 
 async fn api_status(State(state): State<AppState>) -> ApiJson<StatusPayload> {
-    ApiJson(state.bridge.status())
+    let mut status = state.bridge.status();
+    if state.spotify.snapshot().enabled && status.display_on && status.ok {
+        status.job = Job::Spotify;
+    }
+    ApiJson(status)
 }
 
 async fn api_telemetry(State(state): State<AppState>) -> ApiResult<TelemetryPayload> {
@@ -1394,6 +1421,7 @@ async fn youtube_video(
 }
 
 async fn display_on(State(state): State<AppState>) -> ApiResult<StatusPayload> {
+    state.spotify.suspend_for_display_command().await;
     state
         .bridge
         .request_control(|reply| Command::Power { on: true, reply })
@@ -1403,6 +1431,7 @@ async fn display_on(State(state): State<AppState>) -> ApiResult<StatusPayload> {
 }
 
 async fn display_off(State(state): State<AppState>) -> ApiResult<StatusPayload> {
+    state.spotify.suspend_for_display_command().await;
     state
         .bridge
         .request_control(|reply| Command::Power { on: false, reply })
@@ -1459,6 +1488,7 @@ async fn frame(
         )));
     }
 
+    state.spotify.suspend_for_display_command().await;
     state
         .bridge
         .request_data(|reply| Command::Frame {
@@ -1510,6 +1540,7 @@ async fn image(
         .map_err(|error| ApiError::internal(format!("image decoder task failed: {error}")))?
         .map_err(|error| ApiError::bad_request(error.to_string()))?;
 
+    state.spotify.suspend_for_display_command().await;
     match decoded {
         DecodedUpload::Still(data) => {
             state
@@ -1531,6 +1562,7 @@ async fn image(
 }
 
 async fn stop(State(state): State<AppState>) -> ApiResult<StatusPayload> {
+    state.spotify.suspend_for_display_command().await;
     state
         .bridge
         .request_control(|reply| Command::Stop { reply })

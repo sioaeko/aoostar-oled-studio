@@ -36,6 +36,9 @@ $expectedEntries = @(
     "$PackageName/verify-package.sh"
     "$PackageName/brightness-probe.py"
     "$PackageName/PROXMOX-INSTALL.md"
+    "$PackageName/SPOTIFY.md"
+    "$PackageName/LICENSE-INTER"
+    "$PackageName/LICENSE-NOTOSANSKR"
     "$PackageName/SHA256SUMS"
     "$PackageName/version.txt"
     "$PackageName/LICENSE-MIT"
@@ -271,6 +274,9 @@ $workspaceSources = @{
     'verify-package.sh' = Join-Path $ProjectRoot 'linux/verify-asterctl-web-package.sh'
     'brightness-probe.py' = Join-Path $ProjectRoot 'linux/brightness-probe.py'
     'PROXMOX-INSTALL.md' = Join-Path $ProjectRoot 'linux/PROXMOX-INSTALL.md'
+    'SPOTIFY.md' = Join-Path $ProjectRoot 'docs/SPOTIFY.md'
+    'LICENSE-INTER' = Join-Path $ProjectRoot 'crates/asterctl-web/assets/Inter-OFL.txt'
+    'LICENSE-NOTOSANSKR' = Join-Path $ProjectRoot 'crates/asterctl-web/assets/NotoSansKR-OFL.txt'
 }
 foreach ($name in $workspaceSources.Keys) {
     $packagedHash = (Get-FileHash -LiteralPath (Join-Path $PackageRoot $name) -Algorithm SHA256).Hash

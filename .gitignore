@@ -11,3 +11,4 @@ third_party/yt-dlp/yt-dlp
 .DS_Store
 *.bak
 Cargo.lock.tmp
+.asterctl-state/

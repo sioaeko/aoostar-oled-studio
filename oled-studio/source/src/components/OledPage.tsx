@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Loader2,
   MonitorPlay,
+  Music2,
   Plug,
   Power,
   PowerOff,
@@ -24,16 +25,18 @@ import OledOffTab from './OledOffTab';
 import OledStatsTab from './OledStatsTab';
 import { GifTab, ImageTab, VideoTab } from './OledMediaTabs';
 import OledTextTab from './OledTextTab';
+import OledSpotifyTab from './OledSpotifyTab';
 import { Chip, LogRow, SectionCard, TabBar } from './OledShared';
 import type { ActivityEntry, PushLog } from './OledShared';
 
-type Tab = 'stats' | 'gif' | 'video' | 'image' | 'text' | 'off';
+type Tab = 'stats' | 'spotify' | 'gif' | 'video' | 'image' | 'text' | 'off';
 type ConnState = 'sim' | 'checking' | 'ok' | 'unreachable';
 
 const STATUS_POLL_MS = 2_000;
 
 const TABS: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'stats', label: 'Stats', icon: LayoutDashboard },
+  { id: 'spotify', label: 'Spotify', icon: Music2 },
   { id: 'gif', label: 'GIF', icon: Film },
   { id: 'video', label: 'Video', icon: MonitorPlay },
   { id: 'image', label: 'Image', icon: ImageIcon },
@@ -120,6 +123,7 @@ export default function OledPage() {
       if (st.connected) {
         setDisplayOn(st.displayOn);
         setSoftwareBrightness(st.brightness);
+        if (st.job === 'spotify') setTab('spotify');
       }
       pushLog(
         'Bridge',
@@ -227,7 +231,9 @@ export default function OledPage() {
   };
 
   const workerLabel =
-    bridgeInfo?.job === 'gif'
+    bridgeInfo?.job === 'spotify'
+      ? 'Spotify'
+      : bridgeInfo?.job === 'gif'
       ? 'GIF loop'
       : bridgeInfo?.job === 'still'
         ? 'Still frame'
@@ -422,6 +428,7 @@ export default function OledPage() {
                 />
               )}
               {tab === 'gif' && <GifTab client={client} pushLog={pushLog} onSource={setPanelSource} />}
+              {tab === 'spotify' && <OledSpotifyTab bridgeUrl={bridgeUrl} available={client.kind === 'bridge' && conn === 'ok'} simulated={bridgeInfo?.simulated ?? false} pushLog={pushLog} onSource={setPanelSource} />}
               {tab === 'video' && <VideoTab client={client} pushLog={pushLog} onSource={setPanelSource} />}
               {tab === 'image' && <ImageTab client={client} pushLog={pushLog} onSource={setPanelSource} fit={fit} />}
               {tab === 'text' && <OledTextTab client={client} pushLog={pushLog} onSource={setPanelSource} />}

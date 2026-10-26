@@ -1,7 +1,7 @@
 {
   "name": "aoostar-oled-studio",
   "private": true,
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "Self-hosted web controller for the AOOSTAR WTR MAX front display",
   "license": "MIT OR Apache-2.0",
   "repository": {

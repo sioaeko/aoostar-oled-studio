@@ -37,7 +37,8 @@ fi
 
 cd "$SCRIPT_DIR"
 for file in asterctl-web asterctl-web.service install-asterctl-web.sh PROXMOX-INSTALL.md \
-    brightness-probe.py yt-dlp SHA256SUMS version.txt LICENSE-MIT LICENSE-APACHE LICENSE-YT-DLP; do
+    brightness-probe.py yt-dlp SHA256SUMS version.txt LICENSE-MIT LICENSE-APACHE LICENSE-YT-DLP \
+    SPOTIFY.md LICENSE-INTER LICENSE-NOTOSANSKR; do
     [[ -f "$file" ]] || die "package file is missing: $file"
 done
 

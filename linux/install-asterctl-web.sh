@@ -564,6 +564,8 @@ validate_unit_source_policy() {
         'RestartSec=3'
         'RuntimeDirectory=asterctl-web'
         'RuntimeDirectoryMode=0700'
+        'StateDirectory=asterctl-web'
+        'StateDirectoryMode=0700'
         'NoNewPrivileges=true'
         'PrivateTmp=true'
         'ProtectHome=true'
@@ -598,7 +600,7 @@ validate_unit_source_policy() {
         [[ "$section" == "Service" ]] || continue
         case "$key" in
             Type|User|Group|SupplementaryGroups|ExecStart|Restart|RestartSec|RuntimeDirectory|RuntimeDirectoryMode|\
-                NoNewPrivileges|PrivateTmp|ProtectHome|ProtectSystem|\
+                StateDirectory|StateDirectoryMode|NoNewPrivileges|PrivateTmp|ProtectHome|ProtectSystem|\
                 ProtectKernelTunables|ProtectKernelModules|ProtectControlGroups|\
                 RestrictAddressFamilies|LockPersonality|MemoryDenyWriteExecute|UMask)
                 ;;
