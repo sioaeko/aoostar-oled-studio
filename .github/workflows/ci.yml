@@ -28,7 +28,10 @@ jobs:
         working-directory: oled-studio/source
         run: |
           bun install --frozen-lockfile
-          bun audit
+          # postcss-selector-parser 6.1.5 (pinned in package.json overrides)
+          # backports the GHSA-rj75-hqrm-r3gf fix from 7.1.6; the advisory's
+          # range still lists every version below 7.1.6.
+          bun audit --ignore=GHSA-rj75-hqrm-r3gf
           bun test
           bun run build
 
